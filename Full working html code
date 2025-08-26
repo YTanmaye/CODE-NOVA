@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Code Nova</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #0a0f17;
+    --accent-pink: #f12ea6;
+    --accent-purple: #9a2bd8;
+    --nav-bg: #1e2433;
+    --nav-active: #2a3145;
+    --nav-text: #f4d787;
+    --text-light: #ffffff;
+    --text-muted: #c9c9c9;
+    --card:#171c29;
+    --card2:#121726;
+    --ok:#1fa97a;
+    --bad:#e64545;
+    --chip:#212a40;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at left, #f12ea633, transparent 70%),
+                radial-gradient(circle at bottom right, #9a2bd833, transparent 70%),
+                var(--bg-dark);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* NAVBAR */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+  }
+  .logo { font-size: 1.5rem; font-weight: 700; }
+  .logo span { color: var(--accent-pink); }
+  .nav-links { display: flex; gap: 1.0rem; flex-wrap: wrap; }
+  .nav-links a {
+    text-decoration: none;
+    padding: .6rem 1.1rem;
+    border-radius: 30px;
+    background: var(--nav-bg);
+    color: var(--nav-text);
+    font-weight: 500;
+    transition: 0.25s;
+    cursor:pointer;
+  }
+  .nav-links a.active, .nav-links a:hover { background: var(--nav-active); }
+
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 2rem 3rem;
+    gap: 2rem;
+  }
+  .hero-text h5 {
+    background: rgba(255,255,255,0.1);
+    display: inline-block;
+    padding: .4rem .8rem;
+    border-radius: 20px;
+    font-size: .9rem;
+    margin-bottom: 1rem;
+  }
+  .hero-text h1 { font-size: 3rem; font-weight: 700; line-height: 1.2; }
+  .hero-text h1 span { color: var(--accent-pink); }
+  .hero-text p { margin: 1.2rem 0; color: var(--text-muted); max-width: 520px; }
+  .btn {
+    display: inline-block;
+    padding: .9rem 1.4rem;
+    border-radius: 14px;
+    background: var(--accent-purple);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    border:0;
+    cursor:pointer;
+  }
+  .btn:hover { background: #7b21c0; }
+
+  /* SPLINE FRAME */
+  .hero-3d iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+    border-radius: 12px;
+  }
+
+  /* PAGES */
+  .page { display: none; padding: 1.5rem 3rem 3rem; }
+  .page.active { display:block; }
+
+  /* CARDS / GRIDS */
+  .grid { display:grid; gap:1rem; }
+  .grid.cols-5 { grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); }
+  .card {
+    background: linear-gradient(180deg, var(--card), var(--card2));
+    border: 1px solid #22283a;
+    padding: 1rem;
+    border-radius: 14px;
+  }
+  .card h3 { font-size:1.1rem; margin-bottom:.4rem; }
+  .muted { color: var(--text-muted); font-size:.95rem; }
+
+  /* Chips */
+  .chip {
+    display:inline-block; background:var(--chip); color:#cfe9ff;
+    padding:.35rem .7rem; border-radius:999px; font-size:.8rem; margin:.25rem .25rem 0 0;
+    border:1px solid #2a344d;
+  }
+
+  /* Topic layout */
+  .topic-header { display:flex; gap:1rem; align-items:center; justify-content:space-between; margin-bottom:1rem;}
+  .back-top {
+    background:transparent;border:1px solid #2a3046;color:#dbe6ff;border-radius:10px;padding:.5rem .8rem;cursor:pointer;
+  }
+  .topic-box { background:#101627; border:1px solid #22283a; padding:1rem; border-radius:14px; }
+  .topic-box h2 { margin-bottom:.5rem; }
+  .info { color:var(--text-muted); line-height:1.7; }
+
+  /* Quiz */
+  .quiz-wrap { max-width:900px; margin:0 auto; }
+  .q-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem;}
+  .q-body { background:#0e1424; border:1px solid #202842; padding:1rem; border-radius:14px; }
+  .q-title { font-size:1.1rem; margin-bottom:.8rem; }
+  .options { display:grid; gap:.6rem; margin-top:.6rem; }
+  .opt {
+    background:#161d32; border:1px solid #283154; padding:.7rem 1rem; border-radius:12px; cursor:pointer; text-align:left;
+    color: var(--accent-pink); 
+  }
+  .opt:hover { background:#1b2442; }
+  .opt.correct { background: rgba(31,169,122,0.18); border-color: var(--ok); }
+  .opt.wrong   { background: rgba(230,69,69,0.18); border-color: var(--bad); }
+  .answer-reveal { margin-top:.6rem; color:#e6f7ff; font-size:.95rem; background:#152138; border-left:4px solid var(--ok); padding:.6rem .8rem; border-radius:8px; display:none; }
+  .q-footer { display:flex; justify-content:space-between; gap:.6rem; margin-top:1rem; }
+  .ghost { background:transparent; border:1px solid #2a3046; }
+  .stats { display:flex; gap:.6rem; flex-wrap:wrap; }
+  .pill { background:#121a2e; border:1px solid #253153; padding:.45rem .7rem; border-radius:999px; font-size:.85rem; color:#c9d6ff; }
+
+  /* Leaderboard */
+  table { width:100%; border-collapse:collapse; }
+  th, td { text-align:left; padding:.8rem; border-bottom:1px solid #223056; }
+  th { color:#e8f0ff; background:#121a2f; position:sticky; top:0; }
+  tbody tr:hover { background:#0f1730; }
+
+  /* Auth modal */
+  .modal { position: fixed; inset: 0; display:none; align-items:center; justify-content:center; background: rgba(0,0,0,.55); z-index: 50;}
+  .modal.show { display:flex; }
+  .modal-card { width:min(520px, 92vw); background:#0e1424; border:1px solid #263055; border-radius:16px; padding:1rem; }
+  .modal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:.5rem;}
+  .modal-head h3{ font-size:1.2rem;}
+  .field { margin:.6rem 0; }
+  .field label { display:block; font-size:.9rem; margin-bottom:.25rem; color:#d9e4ff; }
+  .field input {
+    width:100%; background:#0f172a; border:1px solid #283154; color:#e8f0ff; padding:.7rem .8rem; border-radius:10px;
+  }
+  .hl { color:#ffd78c; cursor:pointer; }
+
+ 
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo"><span>Code</span> Nova</div>
+    <div class="nav-links">
+      <a data-nav="home" class="active">Home</a>
+      <a data-nav="practice">Practice</a>
+      <a data-nav="leaderboard">Leader board</a>
+      <a data-nav="about">About</a>
+      <a id="authBtn">Sign in</a>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <section id="home" class="hero page active">
+    <div class="hero-text">
+      <h5>Code your way</h5>
+      <h1>Step into the future<br>OF <span>CODING</span></h1>
+      <p>Test your coding knowledge with interactive quizzes. From basics to advanced concepts, challenge yourself and track your progress as you level up.</p>
+      <button class="btn" data-go="practice">Get Started</button>
+    </div>
+    <div class="hero-3d">
+      <!-- Your 3D model embedded (kept exactly) -->
+      <iframe src="https://my.spline.design/chips-vFqXUUNMvfnFVxeBPiFTTaa2/" frameborder="0"></iframe>
+    </div>
+  </section>
+
+  <!-- PRACTICE (Languages list) -->
+  <section id="practice" class="page">
+    <h2 style="margin-bottom:.8rem">Choose a Language</h2>
+    <p class="muted" style="margin-bottom:1rem">Pick a language to explore topics. Each topic includes a short lesson and a quiz generated from it.</p>
+    <div id="langGrid" class="grid cols-5"></div>
+  </section>
+
+  <!-- LANGUAGE DETAIL (topics list) -->
+  <section id="langDetail" class="page">
+    <div class="topic-header">
+      <button class="back-top" data-go="practice">← Back</button>
+      <div class="stats">
+        <span class="pill" id="langNamePill"></span>
+        <span class="pill" id="topicCountPill"></span>
+      </div>
+    </div>
+    <div id="topicsGrid" class="grid cols-5"></div>
+  </section>
+
+  <!-- TOPIC (info + start quiz) -->
+  <section id="topic" class="page">
+    <div class="topic-header">
+      <button class="back-top" id="backToTopics">← Back</button>
+      <div class="stats">
+        <span class="pill" id="topicLangPill"></span>
+        <span class="pill" id="topicNamePill"></span>
+      </div>
+    </div>
+    <div class="topic-box">
+      <h2 id="topicTitle"></h2>
+      <p id="topicInfo" class="info"></p>
+      <div style="margin-top:1rem; display:flex; gap:.6rem; flex-wrap:wrap;">
+        <span class="chip" id="topicMeta1"></span>
+        <span class="chip" id="topicMeta2"></span>
+        <span class="chip" id="topicMeta3"></span>
+      </div>
+      <div style="margin-top:1.1rem;">
+        <button id="startQuizBtn" class="btn">Start MCQ</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="page">
+    <div class="quiz-wrap">
+      <div class="q-header">
+        <button class="back-top" id="backToTopic">← Back</button>
+        <div class="stats">
+          <span class="pill" id="quizLang"></span>
+          <span class="pill" id="quizTopic"></span>
+          <span class="pill" id="quizProgress"></span>
+          <span class="pill" id="quizTimer">00:00</span>
+        </div>
+      </div>
+
+      <div class="q-body">
+        <div class="q-title" id="qTitle">Question text</div>
+        <div class="options" id="qOptions"></div>
+        <div class="answer-reveal" id="answerReveal">Correct Answer: …</div>
+        <div class="q-footer">
+          <button class="btn ghost" id="prevBtn">← Previous</button>
+          <div style="flex:1"></div>
+          <button class="btn" id="nextBtn">Next →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ RESULT -->
+  <section id="result" class="page">
+    <div class="card" style="max-width:820px;margin:0 auto;">
+      <h2 style="margin-bottom:.4rem">Quiz Result</h2>
+      <p class="muted" id="resultMeta"></p>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; margin:1rem 0;">
+        <span class="pill" id="resScore"></span>
+        <span class="pill" id="resTime"></span>
+        <span class="pill" id="resPercent"></span>
+      </div>
+      <div style="display:flex; gap:.6rem; flex-wrap:wrap;">
+        <button class="btn" id="saveResultBtn">Save to Leaderboard</button>
+        <button class="btn ghost" data-go="practice">Go to Practice</button>
+        <button class="btn ghost" data-go="leaderboard">View Leaderboard</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section id="leaderboard" class="page">
+    <h2 style="margin-bottom:.6rem">Leader board</h2>
+    <p class="muted" style="margin-bottom:1rem">Ranks are based on total points saved by each signed-in user.</p>
+    <div class="card" style="overflow:auto;">
+      <table>
+        <thead>
+          <tr><th>#</th><th>User</th><th>Total Points</th><th>Quizzes Taken</th><th>Progress</th></tr>
+        </thead>
+        <tbody id="lbBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="page">
+    <h2 style="margin-bottom:.6rem">About Code Nova</h2>
+    <div class="card">
+      <p class="muted">
+        Code Nova is a learning playground for programmers. Explore concise lessons across popular languages,
+        then immediately test yourself with MCQs generated from those lessons. Track your progress, climb the
+        leaderboard, and keep sharpening your skills—all in one sleek, distraction-free interface.
+      </p>
+     
+    </div>
+  </section>
+
+  <!-- AUTH MODAL -->
+  <div id="authModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="authTitle">Sign in</h3>
+        <button class="back-top" id="closeAuth">✕</button>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input id="authEmail" type="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input id="authPass" type="password" placeholder="••••••••">
+      </div>
+      <div style="display:flex; gap:.6rem; margin-top:.6rem; flex-wrap:wrap;">
+        <button class="btn" id="doAuth">Sign in</button>
+        <button class="btn ghost" id="toggleAuth">Need an account? Sign up</button>
+        <button class="btn ghost" id="forgotBtn">Forgot password</button>
+      </div>
+      <p class="muted" style="margin-top:.6rem;">Your data is stored locally in your browser for this demo.</p>
+    </div>
+  </div>
+
+<script>
+/* ===========
+   SIMPLE STATE / ROUTER
+   =========== */
+const pages = ["home","practice","langDetail","topic","quiz","result","leaderboard","about"];
+const navLinks = document.querySelectorAll('.nav-links a[data-nav]');
+function showPage(id){
+  pages.forEach(p=>document.getElementById(p)?.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+  navLinks.forEach(a=>a.classList.toggle('active', a.dataset.nav===id));
+}
+document.querySelectorAll('[data-go]').forEach(btn=>{
+  btn.addEventListener('click', ()=>showPage(btn.dataset.go));
+});
+navLinks.forEach(a=>a.addEventListener('click', ()=>showPage(a.dataset.nav)));
+
+/* ===========
+   AUTH (localStorage demo)
+   =========== */
+const authBtn = document.getElementById('authBtn');
+const authModal = document.getElementById('authModal');
+const closeAuth = document.getElementById('closeAuth');
+const toggleAuth = document.getElementById('toggleAuth');
+const doAuth = document.getElementById('doAuth');
+const forgotBtn = document.getElementById('forgotBtn');
+const authEmail = document.getElementById('authEmail');
+const authPass = document.getElementById('authPass');
+const authTitle = document.getElementById('authTitle');
+
+let authMode = 'signin'; // or signup
+let currentUser = JSON.parse(localStorage.getItem('cn_user')||'null');
+
+function updateAuthButton(){
+  if(currentUser){
+    authBtn.textContent = currentUser.email.split('@')[0] + ' (Sign out)';
+  } else {
+    authBtn.textContent = 'Sign in';
+  }
+}
+updateAuthButton();
+
+authBtn.addEventListener('click', ()=>{
+  if(currentUser){
+    // sign out
+    currentUser = null;
+    localStorage.removeItem('cn_user');
+    updateAuthButton();
+    alert('Signed out.');
+    return;
+  }
+  authMode = 'signin';
+  authTitle.textContent = 'Sign in';
+  toggleAuth.textContent = 'Need an account? Sign up';
+  doAuth.textContent = 'Sign in';
+  authModal.classList.add('show');
+});
+closeAuth.addEventListener('click', ()=>authModal.classList.remove('show'));
+toggleAuth.addEventListener('click', ()=>{
+  if(authMode==='signin'){
+    authMode='signup';
+    authTitle.textContent='Sign up';
+    toggleAuth.textContent='Have an account? Sign in';
+    doAuth.textContent='Sign up';
+  }else{
+    authMode='signin';
+    authTitle.textContent='Sign in';
+    toggleAuth.textContent='Need an account? Sign up';
+    doAuth.textContent='Sign in';
+  }
+});
+doAuth.addEventListener('click', ()=>{
+  const email = authEmail.value.trim().toLowerCase();
+  const pass = authPass.value;
+  if(!email || !pass){ alert('Enter email and password.'); return; }
+
+  const users = JSON.parse(localStorage.getItem('cn_users')||'{}');
+  if(authMode==='signup'){
+    if(users[email]){ alert('Account exists. Please sign in.'); return; }
+    users[email] = { email, pass, points:0, quizzes:0, progress:{} };
+    localStorage.setItem('cn_users', JSON.stringify(users));
+    currentUser = { email };
+    localStorage.setItem('cn_user', JSON.stringify(currentUser));
+    authModal.classList.remove('show');
+    updateAuthButton();
+    alert('Account created & signed in!');
+  } else {
+    if(!users[email] || users[email].pass!==pass){ alert('Invalid credentials.'); return; }
+    currentUser = { email };
+    localStorage.setItem('cn_user', JSON.stringify(currentUser));
+    authModal.classList.remove('show');
+    updateAuthButton();
+    alert('Signed in!');
+  }
+});
+forgotBtn.addEventListener('click', ()=>{
+  const email = prompt('Enter your email to retrieve password:');
+  if(!email) return;
+  const users = JSON.parse(localStorage.getItem('cn_users')||'{}');
+  if(users[email]) alert('Saved password (demo): ' + users[email].pass);
+  else alert('No account found for that email.');
+});
+
+/* ===========
+   CONTENT DATA
+   Each language has topics. Each topic has info text and mcqs.
+   You can add more languages/topics/questions here.
+   =========== */
+const CONTENT = {
+  "Java": {
+    level: ["Beginner","Intermediate","Advanced"],
+    topics: [
+      {
+        id:"java_intro",
+        name:"What is Java?",
+        info:`Java is a high-level, class-based, object-oriented programming language. It was created by James Gosling and his team at Sun Microsystems in 1995. Java is designed to have as few implementation dependencies as possible and follows the write-once, run-anywhere (WORA) principle using the JVM. It is used for web apps, Android, enterprise services, and more.`,
+        meta:["James Gosling • 1995","OOP • JVM • WORA","Used in: Web, Android, Enterprise"],
+        mcqs:[
+          {q:"Who created Java?", opts:["Dennis Ritchie","James Gosling","Guido van Rossum","Bjarne Stroustrup"], ans:1},
+          {q:"What does WORA stand for?", opts:["Write Once Run Anywhere","Work On Runtime API","Write-Once Rapid App","Wide Operational Runtime Access"], ans:0},
+          {q:"Java primarily runs on:", opts:["Direct machine code","JVM","Browser JS engine","CLR"], ans:1},
+          {q:"Java was introduced in which year?", opts:["1989","1991","1995","2001"], ans:2},
+          {q:"Java is mainly:", opts:["Procedural","Functional only","Object-oriented","Assembly-level"], ans:2}
+        ]
+      },
+      {
+        id:"java_history",
+        name:"History of Java",
+        info:`Originally called Oak, Java began as a project for interactive television. It evolved at Sun Microsystems in the early 1990s, later rebranded to Java. Oracle acquired Sun in 2010 and now maintains Java.`,
+        meta:["Oak → Java","Sun Microsystems","Oracle stewardship"],
+        mcqs:[
+          {q:"Java was originally named:", opts:["Oak","Pine","Maple","Cedar"], ans:0},
+          {q:"Which company maintains Java today?", opts:["Sun Microsystems","Oracle","IBM","Netscape"], ans:1},
+          {q:"Java started for:", opts:["Interactive TV","Databases","Gaming consoles","Desktop publishing"], ans:0}
+        ]
+      },
+      {
+        id:"java_features",
+        name:"Key Features",
+        info:`Features include object-oriented design, platform independence through bytecode on the JVM, robust memory management with garbage collection, strong standard libraries, and a rich ecosystem.`,
+        meta:["OOP","Platform Independent","Garbage Collection"],
+        mcqs:[
+          {q:"Platform independence is enabled by:", opts:["JDK","JRE","Bytecode on JVM","Native binaries"], ans:2},
+          {q:"Automatic memory management is via:", opts:["Reference counting","Manual free","Garbage Collector","Stack only"], ans:2}
+        ]
+      },
+      {
+        id:"java_oop",
+        name:"OOP Concepts",
+        info:`Java embraces encapsulation, inheritance, polymorphism, and abstraction. Encapsulation hides data via classes; inheritance promotes reuse; polymorphism lets interfaces share behavior; abstraction simplifies complexity.`,
+        meta:["Encapsulation","Inheritance","Polymorphism"],
+        mcqs:[
+          {q:"Hiding data inside a class is:", opts:["Abstraction","Encapsulation","Polymorphism","Inheritance"], ans:1},
+          {q:"Overriding methods is related to:", opts:["Polymorphism","Abstraction","Casting","Finalization"], ans:0}
+        ]
+      },
+      {
+        id:"java_applications",
+        name:"Applications of Java",
+        info:`Java powers Android apps (via Kotlin/Java), large-scale enterprise systems (Spring), web backends, financial trading systems, and big data tools.`,
+        meta:["Android","Enterprise","Web backend"],
+        mcqs:[
+          {q:"Popular enterprise framework:", opts:["Django","Rails","Spring","Laravel"], ans:2}
+        ]
+      },
+      {
+        id:"java_jvmjdk",
+        name:"JVM & JDK Overview",
+        info:`The JVM runs bytecode. The JRE provides the JVM and libraries to run apps. The JDK includes the JRE plus development tools like javac.`,
+        meta:["JVM","JRE","JDK"],
+        mcqs:[
+          {q:"Compiler for Java source:", opts:["java","javac","jar","jlink"], ans:1},
+          {q:"JDK contains:", opts:["Only JVM","JRE + tools","Only tools","OS kernel"], ans:1}
+        ]
+      }
+    ]
+  },
+  "Python": {
+    level:["Beginner","Intermediate","Advanced"],
+    topics:[
+      {
+        id:"py_intro",
+        name:"What is Python?",
+        info:`Python is a high-level, interpreted language created by Guido van Rossum and first released in 1991. Known for readability and vast libraries, it's used in web, data science, scripting, and automation.`,
+        meta:["Guido van Rossum • 1991","Readable • Batteries-included","Web • Data • Automation"],
+        mcqs:[
+          {q:"Python was created by:", opts:["James Gosling","Guido van Rossum","Brendan Eich","Ritchie"], ans:1},
+          {q:"Python is:", opts:["Compiled only","Interpreted","Assembly","Bytecode only"], ans:1}
+        ]
+      },
+      {
+        id:"py_uses",
+        name:"Applications",
+        info:`Common uses include web development (Django/Flask), data analysis (pandas), ML (TensorFlow), scripting, and automation.`,
+        meta:["Web","Data","ML"],
+        mcqs:[
+          {q:"A Python web framework:", opts:["Spring","Flask","Laravel","ASP.NET"], ans:1}
+        ]
+      },
+      {
+        id:"py_features",
+        name:"Key Features",
+        info:`Emphasizes simplicity, dynamic typing, rich standard library, and extensive third-party packages via PyPI.`,
+        meta:["Readable","Dynamic","PyPI"],
+        mcqs:[
+          {q:"Python packages index:", opts:["npm","Maven","PyPI","Cargo"], ans:2}
+        ]
+      }
+    ]
+  },
+  "C": {
+    level:["Beginner","Intermediate","Advanced"],
+    topics:[
+      {
+        id:"c_intro",
+        name:"What is C?",
+        info:`C is a general-purpose, procedural language created by Dennis Ritchie at Bell Labs in 1972. It offers low-level memory access and is widely used in systems programming.`,
+        meta:["Dennis Ritchie • 1972","Procedural","Systems programming"],
+        mcqs:[
+          {q:"C was developed at:", opts:["Sun","Bell Labs","Microsoft","MIT"], ans:1},
+          {q:"C is primarily:", opts:["OOP","Procedural","Functional","Logic"], ans:1}
+        ]
+      },
+      {
+        id:"c_use",
+        name:"Use Cases",
+        info:`Operating systems, embedded systems, compilers, and performance-critical applications.`,
+        meta:["OS","Embedded","Compilers"],
+        mcqs:[
+          {q:"Not a common C domain:", opts:["Embedded","OS kernels","High-level UX design","Compilers"], ans:2}
+        ]
+      }
+    ]
+  },
+  "C++": {
+    level:["Beginner","Intermediate","Advanced"],
+    topics:[
+      {
+        id:"cpp_intro",
+        name:"What is C++?",
+        info:`C++ was created by Bjarne Stroustrup as an extension of C adding object-oriented features. It supports multiple paradigms and is used in games, engines, and high-performance apps.`,
+        meta:["Bjarne Stroustrup","Multi-paradigm","High performance"],
+        mcqs:[
+          {q:"C++ adds to C:", opts:["GC","OOP","Bytecode","Pointers removed"], ans:1}
+        ]
+      },
+      {
+        id:"cpp_use",
+        name:"Use Cases",
+        info:`Game engines, real-time systems, finance, and heavy compute software.`,
+        meta:["Games","Real-time","Finance"],
+        mcqs:[
+          {q:"Game engines often use:", opts:["C++","PHP","R","Haskell"], ans:0}
+        ]
+      }
+    ]
+  },
+  "JavaScript": {
+    level:["Beginner","Intermediate","Advanced"],
+    topics:[
+      {
+        id:"js_intro",
+        name:"What is JavaScript?",
+        info:`JavaScript is the programming language of the web created by Brendan Eich in 1995. It runs in browsers and on servers (Node.js).`,
+        meta:["Brendan Eich • 1995","Web • Node.js","Dynamic"],
+        mcqs:[
+          {q:"JavaScript creator:", opts:["Eich","Gosling","Guido","Ritchie"], ans:0},
+          {q:"JS runs on servers using:", opts:["Django","Rails","Node.js","Spring"], ans:2}
+        ]
+      },
+      {
+        id:"js_dom",
+        name:"DOM & Events",
+        info:`JS manipulates the DOM and handles events to create interactive web pages.`,
+        meta:["DOM","Events","Interactive"],
+        mcqs:[
+          {q:"The DOM represents:", opts:["Database","Page structure","Server API","OS kernel"], ans:1}
+        ]
+      }
+    ]
+  }
+};
+
+/* ===========
+   PRACTICE PAGE RENDER
+   =========== */
+const langGrid = document.getElementById('langGrid');
+function renderLanguages(){
+  langGrid.innerHTML = '';
+  Object.keys(CONTENT).forEach(lang=>{
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML = `
+      <h3>${lang}</h3>
+      <p class="muted">Levels: ${CONTENT[lang].level.join(' • ')}</p>
+      <div style="margin-top:.7rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+        ${CONTENT[lang].level.map(l=>`<span class="chip">${l}</span>`).join('')}
+      </div>
+      <div style="margin-top:1rem;">
+        <button class="btn" data-open-lang="${lang}">Open</button>
+      </div>
+    `;
+    langGrid.appendChild(card);
+  });
+  document.querySelectorAll('[data-open-lang]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      openLanguage(btn.dataset.openLang);
+    });
+  });
+}
+renderLanguages();
+
+/* ===========
+   LANGUAGE DETAIL (topics list)
+   =========== */
+const langNamePill = document.getElementById('langNamePill');
+const topicCountPill = document.getElementById('topicCountPill');
+const topicsGrid = document.getElementById('topicsGrid');
+
+let currentLang = null;
+function openLanguage(lang){
+  currentLang = lang;
+  langNamePill.textContent = lang;
+  const topics = CONTENT[lang].topics;
+  topicCountPill.textContent = topics.length + ' topics';
+  topicsGrid.innerHTML='';
+  topics.forEach(t=>{
+    const d = document.createElement('div');
+    d.className='card';
+    d.innerHTML = `
+      <h3>${t.name}</h3>
+      <p class="muted" style="min-height:44px">${t.info.slice(0,120)}...</p>
+      <div style="margin:.6rem 0; display:flex; gap:.4rem; flex-wrap:wrap;">
+        ${t.meta.slice(0,3).map(m=>`<span class="chip">${m}</span>`).join('')}
+      </div>
+      <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+        <button class="btn" data-open-topic="${t.id}">Learn</button>
+      </div>
+    `;
+    topicsGrid.appendChild(d);
+  });
+  document.querySelectorAll('[data-open-topic]').forEach(btn=>{
+    btn.addEventListener('click', ()=>openTopic(btn.dataset.openTopic));
+  });
+  showPage('langDetail');
+}
+
+/* ===========
+   TOPIC PAGE (info + start MCQ)
+   =========== */
+const topicLangPill = document.getElementById('topicLangPill');
+const topicNamePill = document.getElementById('topicNamePill');
+const topicTitle = document.getElementById('topicTitle');
+const topicInfo = document.getElementById('topicInfo');
+const topicMeta1 = document.getElementById('topicMeta1');
+const topicMeta2 = document.getElementById('topicMeta2');
+const topicMeta3 = document.getElementById('topicMeta3');
+const startQuizBtn = document.getElementById('startQuizBtn');
+const backToTopics = document.getElementById('backToTopics');
+
+let currentTopic = null;
+function openTopic(topicId){
+  const t = CONTENT[currentLang].topics.find(x=>x.id===topicId);
+  if(!t) return;
+  currentTopic = t;
+  topicLangPill.textContent = currentLang;
+  topicNamePill.textContent = t.name;
+  topicTitle.textContent = t.name;
+  topicInfo.textContent = t.info;
+  topicMeta1.textContent = t.meta[0]||'';
+  topicMeta2.textContent = t.meta[1]||'';
+  topicMeta3.textContent = t.meta[2]||'';
+  showPage('topic');
+}
+backToTopics.addEventListener('click', ()=>showPage('langDetail'));
+startQuizBtn.addEventListener('click', ()=>startQuiz());
+
+/* ===========
+   QUIZ ENGINE
+   =========== */
+const qTitle = document.getElementById('qTitle');
+const qOptions = document.getElementById('qOptions');
+const answerReveal = document.getElementById('answerReveal');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const backToTopicBtn = document.getElementById('backToTopic');
+
+const quizLang = document.getElementById('quizLang');
+const quizTopic = document.getElementById('quizTopic');
+const quizProgress = document.getElementById('quizProgress');
+const quizTimer = document.getElementById('quizTimer');
+
+let quiz = { list:[], idx:0, answered:[], score:0, startTime:0, order:[] };
+
+function startQuiz(){
+  const base = currentTopic.mcqs;
+  quiz.list = base.map((q,i)=>({
+    ...q,
+    idx:i,
+    shuffled: shuffle([...q.opts].map((val,idx)=>({val,idx}))) // store original idx mapping
+  }));
+  quiz.idx = 0;
+  quiz.answered = Array(base.length).fill(null);
+  quiz.score = 0;
+  quiz.startTime = Date.now();
+
+  quizLang.textContent = currentLang;
+  quizTopic.textContent = currentTopic.name;
+  updateQuizHeader();
+  renderQuestion();
+  showPage('quiz');
+}
+
+function updateQuizHeader(){
+  quizProgress.textContent = `Q ${quiz.idx+1}/${quiz.list.length}`;
+}
+
+function renderQuestion(){
+  const item = quiz.list[quiz.idx];
+  qTitle.textContent = item.q;
+  qOptions.innerHTML = '';
+  answerReveal.style.display = 'none';
+  // Build option buttons
+  item.shuffled.forEach((optObj, i)=>{
+    const b = document.createElement('button');
+    b.className='opt';
+    b.innerHTML = optObj.val;
+    b.disabled = quiz.answered[quiz.idx]!==null; // disable if already answered
+    b.addEventListener('click', ()=>{
+      if(quiz.answered[quiz.idx]!==null) return;
+      const chosenOriginalIndex = optObj.idx;
+      const isRight = chosenOriginalIndex === item.ans;
+      quiz.answered[quiz.idx] = { chosen: chosenOriginalIndex, correct:item.ans };
+      if(isRight) quiz.score += 1;
+
+      // Visual feedback
+      const buttons = Array.from(qOptions.children);
+      buttons.forEach((btnEl, j)=>{
+        const optOriginalIdx = item.shuffled[j].idx;
+        if(optOriginalIdx === item.ans) btnEl.classList.add('correct');
+        if(j===i && !isRight) btnEl.classList.add('wrong');
+        btnEl.disabled = true;
+      });
+
+      // Reveal correct answer if wrong
+      if(!isRight){
+        answerReveal.textContent = "Correct Answer: " + item.opts[item.ans];
+        answerReveal.style.display = 'block';
+      }
+    });
+    qOptions.appendChild(b);
+  });
+
+  // prev/next enable
+  prevBtn.disabled = quiz.idx===0;
+  nextBtn.textContent = (quiz.idx===quiz.list.length-1) ? 'Finish →' : 'Next →';
+  updateQuizHeader();
+}
+
+prevBtn.addEventListener('click', ()=>{
+  if(quiz.idx>0){ quiz.idx--; renderQuestion(); }
+});
+nextBtn.addEventListener('click', ()=>{
+  if(quiz.idx < quiz.list.length-1){
+    quiz.idx++; renderQuestion();
+  } else {
+    endQuiz();
+  }
+});
+backToTopicBtn.addEventListener('click', ()=>showPage('topic'));
+
+function endQuiz(){
+  const total = quiz.list.length;
+  const correct = quiz.score;
+  const timeMs = Date.now() - quiz.startTime;
+  const pct = Math.round((correct/total)*100);
+  document.getElementById('resultMeta').textContent =
+    `${currentLang} • ${currentTopic.name}`;
+  document.getElementById('resScore').textContent = `Score: ${correct}/${total}`;
+  document.getElementById('resTime').textContent = `Time: ${fmtTime(timeMs)}`;
+  document.getElementById('resPercent').textContent = `Accuracy: ${pct}%`;
+  showPage('result');
+
+  // attach save handler
+  document.getElementById('saveResultBtn').onclick = ()=>{
+    if(!currentUser){ alert('Sign in to save your score.'); return; }
+    const users = JSON.parse(localStorage.getItem('cn_users')||'{}');
+    const u = users[currentUser.email];
+    if(!u){ alert('User not found in storage.'); return; }
+    u.points += correct;
+    u.quizzes += 1;
+    u.progress[currentLang] = u.progress[currentLang] || {};
+    u.progress[currentLang][currentTopic.id] = { correct, total, time: timeMs };
+    users[currentUser.email] = u;
+    localStorage.setItem('cn_users', JSON.stringify(users));
+    alert('Result saved! Check Leader board.');
+  };
+}
+
+/* Timer (simple interval) */
+let tInt = setInterval(()=>{
+  if(document.getElementById('quiz').classList.contains('active') && quiz.startTime){
+    const ms = Date.now()-quiz.startTime;
+    quizTimer.textContent = fmtTime(ms);
+  }
+}, 200);
+
+/* ===========
+   LEADERBOARD
+   =========== */
+function renderLeaderboard(){
+  const tbody = document.getElementById('lbBody');
+  tbody.innerHTML = '';
+  const users = Object.values(JSON.parse(localStorage.getItem('cn_users')||'{}'));
+  users.sort((a,b)=>b.points-a.points);
+  users.forEach((u, i)=>{
+    const taken = u.quizzes||0;
+    const totalTopics = Object.values(CONTENT).reduce((acc,lang)=>acc+lang.topics.length,0);
+    const completed = Object.values(u.progress||{}).reduce((acc,langObj)=>acc+Object.keys(langObj).length,0);
+    const progPct = totalTopics? Math.round((completed/totalTopics)*100):0;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i+1}</td>
+      <td>${u.email}</td>
+      <td>${u.points||0}</td>
+      <td>${taken}</td>
+      <td>${progPct}%</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* Utilities */
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+function fmtTime(ms){
+  const total = Math.floor(ms/1000);
+  const m = String(Math.floor(total/60)).padStart(2,'0');
+  const s = String(total%60).padStart(2,'0');
+  return `${m}:${s}`;
+}
+
+/* ===========
+   NAV INIT
+   =========== */
+document.querySelector('[data-go="practice"]').addEventListener('click', ()=>showPage('practice'));
+document.addEventListener('click', (e)=>{
+  if(e.target.dataset?.go){
+    if(e.target.dataset.go==='leaderboard') renderLeaderboard();
+  }
+});
+
+/* Keep background + animation unchanged (already in original hero). */
+
+/* Initial route */
+showPage('home');
+</script>
+</body>
+</html>
